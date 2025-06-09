@@ -8,6 +8,7 @@
     </form>
     <p v-if="error" class="error">{{ error }}</p>
     <p v-if="success" class="success">{{ success }}</p>
+    <button @click="signupWithGoogleHandler" class="google-btn">Sign Up with Google</button>
     <p>Already have an account? <router-link to="/login">Log In</router-link></p>
   </div>
 </template>
@@ -15,7 +16,7 @@
 <script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { signupWithEmail } from "../config/firebase";
+import { signupWithEmail, loginWithGoogle } from "../config/firebase";
 
 export default {
   name: "SignupComponent",
@@ -38,7 +39,19 @@ export default {
       }
     };
 
-    return { email, password, error, success, signupHandler };
+    const signupWithGoogleHandler = async () => {
+      error.value = "";
+      success.value = "";
+      try {
+        await loginWithGoogle();
+        success.value = "Account created with Google! Redirecting...";
+        router.push("/");
+      } catch (err) {
+        error.value = err.message;
+      }
+    };
+
+    return { email, password, error, success, signupHandler, signupWithGoogleHandler };
   },
 };
 </script>
@@ -51,7 +64,7 @@ export default {
   border: 1px solid #ddd;
   border-radius: 8px;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -92,5 +105,17 @@ button {
 .success {
   color: green;
   margin-top: 0.5rem;
+}
+
+.google-btn {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  background: #4285F4;
+  color: #fff;
 }
 </style>

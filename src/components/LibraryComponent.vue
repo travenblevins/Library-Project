@@ -2,6 +2,7 @@
     <div class="library-container">
         <div class="library-header">
             <h2>Library</h2>
+            <button @click="handleLogout">Logout</button>
         </div>
         <form @submit.prevent="searchBooks">
             <input v-model="query" type="text" placeholder="Search for books..." required />
@@ -27,6 +28,8 @@
 
 <script>
 import { ref, onMounted } from "vue";
+import { logout } from "../config/firebase"; // Import the logout function
+import router from "@/routing";
 
 export default {
     name: "LibraryComponent",
@@ -58,6 +61,11 @@ export default {
             }
         };
 
+        const handleLogout = async () => {
+            await logout();
+            router.push("/login");
+        }
+
         // Load popular books on mount (e.g., bestsellers or a popular keyword)
         onMounted(async () => {
             loading.value = true;
@@ -85,6 +93,7 @@ export default {
             loading,
             error,
             searchBooks,
+            handleLogout
         };
     },
 };
@@ -106,8 +115,10 @@ export default {
 .library-header {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between; /* changed from center to space-between */
     min-height: 200px;
+    padding-left: 2rem;  /* optional: keeps "Library" from hugging the edge */
+    padding-right: 2rem; /* optional: keeps button from hugging the edge */
 }
 
 .library-header h2 {
