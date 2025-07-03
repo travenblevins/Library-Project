@@ -41,7 +41,8 @@ const loginWithGoogle = async () => {
   return userCredential;
 };
 
-const logout = () => { signOut(auth); }
+// Allow callers to await logout completion
+const logout = () => signOut(auth);
 
 export {
   app,
